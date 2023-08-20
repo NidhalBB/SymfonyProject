@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Products{% endblock %}
+
+{% block body %}
+<div class="container">
+<h1 class="mt-4">Les Produits</h1>
+<a href="{{ path('product.new') }}" class="btn btn-primary">
+				Créer un produit
+			</a>
+{% for message in app.flashes('success') %}
+			<div class="alert alert-success mt-4">
+				{{ message }}
+			</div>
+		{% endfor %}
+        {% for message in app.flashes('danger') %}
+			<div class="alert alert-danger mt-4">
+				{{ message }}
+			</div>
+		{% endfor %}
+
+<div class="count">
+    {{ products .getTotalItemCount }}
+</div>
+<table class="table mt-4">
+   <tr>
+        {# sorting of properties based on query components #}
+        <th>{{ knp_pagination_sortable(products, 'Id', 'id') }}</th>
+        <th{% if products.isSorted('name') %} class="sorted"{% endif %}>
+            {{ knp_pagination_sortable(products, 'Name', 'name') }}
+        </th>
+        <th{% if products.isSorted(['price']) %} class="sorted"{% endif %}>
+            {{ knp_pagination_sortable(products, 'Price','price') }}
+        </th>
+        <th{% if products.isSorted(['createdAt']) %} class="sorted"{% endif %}>
+            {{ knp_pagination_sortable(products, 'Release', 'createdAt') }}
+        </th>
+        <th scope="col">Edition</th>
+		<th scope="col">Suppresion</th>
+    </tr>
+
+  <tbody>
+   {% for product in products %}
+            <tr {% if loop.index is odd %}class="color"{% endif %}>
+            <td>{{product.id}}</td>
+            <td>{{product.name}}</td>
+            <td>{{product.price}}</td>
+            <td>{{product.createdAt|date('d/m/y')}}</td>
+            <td><a href="{{ path('product.edit', { id: product.id }) }}" class="btn btn-info">Modifier</a></td>
+			<td><a href="{{ path('product.delete', { id: product.id }) }}" class="btn btn-warning">Supprimer</a></td>
+
+        </tr>
+            
+        {% endfor %}
+  </tbody>
+</table>
+<div class="navigation d-flex justify-content-center mt-4">
+    {{ knp_pagination_render(products) }}
+</div>
+</div>
+{% endblock %}
